@@ -13,10 +13,18 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+import java.util.Random;
+import java.util.RandomAccess;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int NUM_ROWS = 3;
     private static final int NUM_COLS = 2;
+    int mines=10;
+
+    private boolean areMinesSet;
+    // number of mines undiscovered
+    private int minesToFind;
     Button buttons[][]=new Button[NUM_ROWS][NUM_COLS];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,18 @@ public class MainActivity extends AppCompatActivity {
                 buttons[row][col]=button;
             }
         }
+
+    }
+    private void setMines(){
+        int x;
+        int y;
+        for(int i=0;i<this.mines;i++){
+            do{
+                Random r= new Random();
+                x= r.nextInt(this.NUM_COLS-1);
+                y=r.nextInt(this.NUM_ROWS-1);
+            }while(this.buttons[x][y]._state=);
+        }
     }
 
     private void gridButtonClicked(int col,int row) {
@@ -67,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         int newWidth = button.getWidth();
         int newHeight = button.getHeight();
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.Minesweeper_Classic_Mines_Icon);
+                R.drawable.mines);
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
         Resources resource = getResources();
         button.setBackground(new BitmapDrawable(resource, scaledBitmap));
