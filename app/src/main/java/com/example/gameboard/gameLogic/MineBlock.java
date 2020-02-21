@@ -11,7 +11,7 @@ public class MineBlock extends AppCompatActivity {
     private boolean hasMine;
     private String text;
     private String numOfMinesRowCol;
-
+    private boolean isFound;
 
     public void setDefault(){
         hasMine=false;
