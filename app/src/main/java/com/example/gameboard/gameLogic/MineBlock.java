@@ -10,11 +10,18 @@ import java.util.Random;
 public class MineBlock extends AppCompatActivity {
     private boolean hasMine;
     private String text;
+
+
+
+
     private String numOfMinesRowCol;
     private boolean isFound;
 
     public void setDefault(){
         hasMine=false;
+    }
+    public String getNumOfMinesRowCol() {
+        return numOfMinesRowCol;
     }
     public void NumberOfMinesInRowCol(int num){
         // TODO fix this

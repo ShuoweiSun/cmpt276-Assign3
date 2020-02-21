@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttons[][] = new Button[NUM_ROWS][NUM_COLS];
         MineBlock blocks[][]=new MineBlock[NUM_ROWS][NUM_COLS];
         int mines = 10;
+        int rowColMineCount;
 
 
 
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             if(blocks[FINAL_ROW][FINAL_COL].hasMine()){
                             gridButtonClicked(FINAL_COL, FINAL_ROW);}
+                            if(!blocks[FINAL_ROW][FINAL_COL].hasMine()){
+                                gridEmptyClicked(FINAL_COL,FINAL_ROW);
+                            }
                         }
                     });
 
@@ -82,7 +86,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //setting up a mine field that overlays onto the TableRow
+    private void gridEmptyClicked(int final_col, int final_row) {
+            String numOfNearMine=blocks[final_row][final_col].getNumOfMinesRowCol();
+            Toast.makeText(this,"number of mine: "+numOfNearMine,
+                    Toast.LENGTH_SHORT).show();
+            Button button=buttons[final_row][final_col];
+            lockButtonSizes();
+
+    }
+
+    //setting up a mine field that overlays onto the TableRow
         private void setupMineField() {
 
             for (int row = 0; row < NUM_ROWS; row++) {
@@ -113,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-        int rowColMineCount;
+
         // count number of mines in surrounding blocks
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
