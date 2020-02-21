@@ -13,19 +13,21 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+import com.example.gameboard.gameLogic.MineBlock;
+
 import java.util.Random;
-import java.util.RandomAccess;
 
 public class MainActivity extends AppCompatActivity {
-
+    private MineBlock blocks[][];
     private static final int NUM_ROWS = 3;
     private static final int NUM_COLS = 2;
     int mines=10;
 
+
     private boolean areMinesSet;
     // number of mines undiscovered
     private int minesToFind;
-    Button buttons[][]=new Button[NUM_ROWS][NUM_COLS];
+    Button buttons[][]=new Button [NUM_ROWS][NUM_COLS];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +48,12 @@ public class MainActivity extends AppCompatActivity {
                 final int FINAL_COL=col;
                 final int FINAL_ROW=row;
                 Button button=new Button(this);
-                button.setLayoutParams(new TableRow.LayoutParams(
+                button.setLayoutParams(new TableLayout.LayoutParams(
                         TableRow.LayoutParams.MATCH_PARENT,
                         TableRow.LayoutParams.MATCH_PARENT,
                         1.0f
                         ));
-                button.setText(""+col+","+row);
+
 
                 //make text not clip on small buttons
                 button.setPadding(0,0,0,0);
@@ -61,23 +63,67 @@ public class MainActivity extends AppCompatActivity {
                         gridButtonClicked(FINAL_COL,FINAL_ROW);
                     }
                 });
-                tableRow.addView(button);
+                tableRow.addView(buttons[row][col]);
+
                 buttons[row][col]=button;
             }
         }
 
     }
-    private void setMines(){
-        int x;
-        int y;
-        for(int i=0;i<this.mines;i++){
-            do{
-                Random r= new Random();
-                x= r.nextInt(this.NUM_COLS-1);
-                y=r.nextInt(this.NUM_ROWS-1);
-            }while(this.buttons[x][y]._state=);
+    private void setupMineField{
+        blocks=new MineBlock[NUM_ROWS][NUM_COLS];
+        for (int row=0;row<NUM_ROWS;row++){
+            for(int col=0;row<NUM_COLS;col++){
+                final int thisRow=row;
+                final int thisCol=col;
+                blocks[row][col]=new MineBlock();
+                blocks[row][col].setDefault();
+
+            }
         }
     }
+    private void setMines(int mainRow,int mainCol){
+        Random rand = new Random();
+        int mineRow, mineColumn;
+        for(int row=0;row<this.mines;row++){
+            // generate random position
+            mineRow=rand.nextInt(NUM_ROWS);
+            mineColumn=rand.nextInt(NUM_COLS);
+            if((mineRow!=mainRow)||(mineColumn!=mainCol)){
+                //this checks if this location is already has a mine
+                if(blocks[mineRow][mineColumn].hasMine()){
+                    row--;
+                }
+                blocks[mineRow][mineColumn].plantMine();
+            }
+
+        }
+        int rowColMineCount;
+        // count number of mines in surrounding blocks
+        for(int row=0;row<NUM_ROWS;row++)
+        {
+            for (int col = 0; col < NUM_COLS; col++)
+            {
+                // for each block find row and col mine count
+                rowColMineCount = 0;
+
+                    // check in all nearby blocks
+                    for (int thisrow = row; thisrow < NUM_ROWS; thisrow++)
+                    {
+                        if (blocks[thisrow][col].hasMine()){rowColMineCount++;}
+                    }
+                    for (int thiscol=col; thiscol< NUM_COLS; thiscol++)
+                    {
+                        if(blocks[row][thiscol].hasMine()){rowColMineCount++;}
+                    }
+
+
+                    blocks[row][col].NumberOfMinesInRowCol(rowColMineCount);
+
+            }
+    }
+
+
 
     private void gridButtonClicked(int col,int row) {
         Toast.makeText(this,"button"+col+","+row,Toast.LENGTH_SHORT).show();
