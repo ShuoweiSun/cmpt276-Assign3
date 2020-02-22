@@ -10,27 +10,33 @@ import java.util.Random;
 public class MineBlock extends AppCompatActivity {
     private boolean hasMine;
     private boolean mineDiscovered;
+    private boolean isClicked;
     private String text;
 
-
     private String numOfMinesRowCol;
+    private int numOfMineRowCol_int;
 
     public void setDefault(){
         mineDiscovered=false;
         hasMine=false;
+        isClicked=false;
     }
     public void setMineIsFound(){
         hasMine=false;
     }
+    public void setBlockClicked(){
+        isClicked=true;
+    }
+
     public void NumberOfMinesInRowCol(int num){
         // TODO fix this
         numOfMinesRowCol=setNum(num);
+        numOfMineRowCol_int=num;
     }
+    //TODO delete this
     public String setNum(int t){
-        if(t!=0)
-        {
-            text=Integer.toString(t);
-        }
+
+        text=Integer.toString(t);
         return text;
     }
 
@@ -44,6 +50,9 @@ public class MineBlock extends AppCompatActivity {
     }
     public void setMineDiscovered(){
         mineDiscovered=true;
+    }
+    public int getNumOfMineRowCol_int(){
+        return numOfMineRowCol_int;
     }
 
 }

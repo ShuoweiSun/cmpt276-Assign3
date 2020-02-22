@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
@@ -109,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             Button button=buttons[final_row][final_col];
             lockButtonSizes();
+            String fileName="num"+blocks[final_row][final_col].getNumOfMinesRowCol();
+            int id=getResources().getIdentifier(fileName,"drawable",MainActivity.this.getPackageName());
+
+            //change the image
+            button.setBackgroundResource(id);
+
 
     }
 
