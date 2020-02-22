@@ -19,7 +19,9 @@ public class MineBlock extends AppCompatActivity {
         mineDiscovered=false;
         hasMine=false;
     }
-
+    public void setMineIsFound(){
+        hasMine=false;
+    }
     public void NumberOfMinesInRowCol(int num){
         // TODO fix this
         numOfMinesRowCol=setNum(num);

@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (blocks[FINAL_ROW][FINAL_COL].hasMine()) {
                                     gridButtonClicked(FINAL_COL, FINAL_ROW);
                                     blocks[FINAL_ROW][FINAL_COL].setMineDiscovered();
+                                    blocks[FINAL_ROW][FINAL_COL].setMineIsFound();
                                     //TODO fix this so it can be clicked twice
                                     //gridEmptyClicked(FINAL_COL,FINAL_ROW);
                                 }
@@ -122,9 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        private void setDefault(){
-            hasMine=false;
-        }
         // setup random mines
         // Function Reference: https://www.codeproject.com/Articles/113892/Minesweeper-Minesweeper-game-for-Android
         private void setMines() {
@@ -143,26 +141,32 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        // count number of mines in surrounding blocks
+        // count number of mines in the same row and column of the selected block
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 // for each block find row and col mine count
                 rowColMineCount = 0;
 
-                // check in all nearby blocks
-                for (int thisrow = row; thisrow < NUM_ROWS; thisrow++) {
-                    if (blocks[thisrow][col].hasMine()) {
+                // check total mine in the same column as the block
+                for (int thisRow = 0; thisRow < NUM_ROWS; thisRow++) {
+                    if (blocks[thisRow][col].hasMine()) {
                         rowColMineCount++;
                     }
                 }
-                for (int thiscol = col; thiscol < NUM_COLS; thiscol++) {
-                    if (blocks[row][thiscol].hasMine()) {
+                // check total mine in the same row as the block
+                for (int thisCol = 0; thisCol < NUM_COLS; thisCol++) {
+                    if (blocks[row][thisCol].hasMine()) {
                         rowColMineCount++;
                     }
                 }
 
+                //To offset the double-counted mine
+                if(blocks[row][col].hasMine()){
+                    rowColMineCount--;
+                }
 
                 blocks[row][col].NumberOfMinesInRowCol(rowColMineCount);
+
 
             }
         }
