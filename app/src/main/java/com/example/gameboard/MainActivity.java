@@ -108,14 +108,21 @@ public class MainActivity extends AppCompatActivity {
             String numOfNearMine=blocks[final_row][final_col].getNumOfMinesRowCol();
             Toast.makeText(this,"number of mine: "+numOfNearMine,
                     Toast.LENGTH_SHORT).show();
-            Button button=buttons[final_row][final_col];
+            /*Button button=buttons[final_row][final_col];
             lockButtonSizes();
             String fileName="num"+blocks[final_row][final_col].getNumOfMinesRowCol();
             int id=getResources().getIdentifier(fileName,"drawable",MainActivity.this.getPackageName());
 
             //change the image
-            button.setBackgroundResource(id);
+            //button.setBackgroundResource(id);
 
+            int newWidth = button.getWidth();
+            int newHeight = button.getHeight();
+            Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),id);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+            Resources resource = getResources();
+            button.setBackground(new BitmapDrawable(resource, scaledBitmap));
+                */
 
     }
 
