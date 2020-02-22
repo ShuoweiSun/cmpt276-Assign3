@@ -21,9 +21,9 @@ public class MineBlock extends AppCompatActivity {
         hasMine=false;
         isClicked=false;
     }
-    public void setMineIsFound(){
-        hasMine=false;
-    }
+    //public void setMineIsFound(){
+      //  hasMine=false;
+   // }
     public void setBlockClicked(){
         isClicked=true;
     }
@@ -53,6 +53,9 @@ public class MineBlock extends AppCompatActivity {
     }
     public int getNumOfMineRowCol_int(){
         return numOfMineRowCol_int;
+    }
+    public boolean getBlockStatus(){
+        return isClicked;
     }
 
 }

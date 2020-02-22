@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         MineBlock blocks[][]=new MineBlock[NUM_ROWS][NUM_COLS];
         int mines = 4;
         int rowColMineCount;
+        int numOfClicks=0;
 
 
 
@@ -77,16 +78,21 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                                if (blocks[FINAL_ROW][FINAL_COL].hasMine()) {
+                                if (blocks[FINAL_ROW][FINAL_COL].hasMine()&&!blocks[FINAL_ROW][FINAL_COL].getMineStatus()) {
                                     gridButtonClicked(FINAL_COL, FINAL_ROW);
-                                    blocks[FINAL_ROW][FINAL_COL].setMineDiscovered();
-                                    blocks[FINAL_ROW][FINAL_COL].setMineIsFound();
-                                    //TODO fix this so it can be clicked twice
-                                    //gridEmptyClicked(FINAL_COL,FINAL_ROW);
+
                                 }
-                                if (!blocks[FINAL_ROW][FINAL_COL].hasMine()) {
+                                // perform a scan for found mines
+                                if(blocks[FINAL_ROW][FINAL_COL].hasMine()&&blocks[FINAL_ROW][FINAL_COL].getMineStatus()){
                                     gridEmptyClicked(FINAL_COL, FINAL_ROW);
                                 }
+                                blocks[FINAL_ROW][FINAL_COL].setMineDiscovered();
+                                if (!blocks[FINAL_ROW][FINAL_COL].hasMine()) {
+                                    gridEmptyClicked(FINAL_COL, FINAL_ROW);
+                                    blocks[FINAL_ROW][FINAL_COL].setBlockClicked();
+                                }
+                                numOfClicks++;
+                                updateScans();
                                 if(gameWon()){
                                     FragmentManager manager=getSupportFragmentManager();
                                     WinMessageFragment dialog=new WinMessageFragment();
@@ -103,26 +109,45 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    private void updateScans() {
+        for (int row=0;row<NUM_ROWS;row++) {
+            for(int col=0;col<NUM_COLS;col++){
+                if(blocks[row][col].getBlockStatus()){
+                    String numOfNearMine=blocks[row][col].getNumOfMinesRowCol();
+                    Toast.makeText(this,"number of mine: "+numOfNearMine,
+                            Toast.LENGTH_SHORT).show();
+                    Button button=buttons[row][col];
+                    lockButtonSizes();
+                    int count=blocks[row][col].getNumOfMineRowCol_int()-1;
+                    String fileName="num"+count;
+                    int id=getResources().getIdentifier(fileName,"drawable",MainActivity.this.getPackageName());
+                    int newWidth = button.getWidth();
+                    int newHeight = button.getHeight();
+                    Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),id);
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+                    Resources resource = getResources();
+                    button.setBackground(new BitmapDrawable(resource, scaledBitmap));
+                }
+            }
+        }
+    }
+
 
     private void gridEmptyClicked(int final_col, int final_row) {
-            String numOfNearMine=blocks[final_row][final_col].getNumOfMinesRowCol();
-            Toast.makeText(this,"number of mine: "+numOfNearMine,
-                    Toast.LENGTH_SHORT).show();
-            /*Button button=buttons[final_row][final_col];
-            lockButtonSizes();
-            String fileName="num"+blocks[final_row][final_col].getNumOfMinesRowCol();
-            int id=getResources().getIdentifier(fileName,"drawable",MainActivity.this.getPackageName());
+        String numOfNearMine=blocks[final_row][final_col].getNumOfMinesRowCol();
+        Toast.makeText(this,"number of mine: "+numOfNearMine,
+                Toast.LENGTH_SHORT).show();
+        Button button=buttons[final_row][final_col];
+        lockButtonSizes();
+        String fileName="num"+blocks[final_row][final_col].getNumOfMinesRowCol();
+        int id=getResources().getIdentifier(fileName,"drawable",MainActivity.this.getPackageName());
+        int newWidth = button.getWidth();
+        int newHeight = button.getHeight();
+        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),id);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+        Resources resource = getResources();
+        button.setBackground(new BitmapDrawable(resource, scaledBitmap));
 
-            //change the image
-            //button.setBackgroundResource(id);
-
-            int newWidth = button.getWidth();
-            int newHeight = button.getHeight();
-            Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),id);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
-            Resources resource = getResources();
-            button.setBackground(new BitmapDrawable(resource, scaledBitmap));
-                */
 
     }
 
@@ -185,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private boolean gameWon(){
+        private boolean gameWon(){
             for (int row=0;row<NUM_ROWS;row++) {
                 for(int col=0;col<NUM_COLS;col++){
                     if(blocks[row][col].hasMine()&&!blocks[row][col].getMineStatus()){
