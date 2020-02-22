@@ -9,20 +9,17 @@ import java.io.StringBufferInputStream;
 import java.util.Random;
 public class MineBlock extends AppCompatActivity {
     private boolean hasMine;
+    private boolean mineDiscovered;
     private String text;
 
 
-
-
     private String numOfMinesRowCol;
-    private boolean isFound;
 
     public void setDefault(){
+        mineDiscovered=false;
         hasMine=false;
     }
-    public String getNumOfMinesRowCol() {
-        return numOfMinesRowCol;
-    }
+
     public void NumberOfMinesInRowCol(int num){
         // TODO fix this
         numOfMinesRowCol=setNum(num);
@@ -37,4 +34,14 @@ public class MineBlock extends AppCompatActivity {
 
     public boolean hasMine(){return hasMine;}
     public void plantMine(){hasMine=true;}
+    public String getNumOfMinesRowCol() {
+        return numOfMinesRowCol;
+    }
+    public boolean getMineStatus() {
+        return mineDiscovered;
+    }
+    public void setMineDiscovered(){
+        mineDiscovered=true;
+    }
+
 }

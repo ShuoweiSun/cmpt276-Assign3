@@ -1,12 +1,14 @@
 package com.example.gameboard;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -14,17 +16,18 @@ import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.example.gameboard.gameLogic.MineBlock;
+import com.example.gameboard.gameLogic.WinMessageFragment;
 
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
 
-        private static final int NUM_ROWS = 8;
-        private static final int NUM_COLS = 5;
+        private static final int NUM_ROWS = 3;
+        private static final int NUM_COLS = 3;
         Button buttons[][] = new Button[NUM_ROWS][NUM_COLS];
         MineBlock blocks[][]=new MineBlock[NUM_ROWS][NUM_COLS];
-        int mines = 10;
+        int mines = 4;
         int rowColMineCount;
 
 
@@ -72,11 +75,23 @@ public class MainActivity extends AppCompatActivity {
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(blocks[FINAL_ROW][FINAL_COL].hasMine()){
-                            gridButtonClicked(FINAL_COL, FINAL_ROW);}
-                            if(!blocks[FINAL_ROW][FINAL_COL].hasMine()){
-                                gridEmptyClicked(FINAL_COL,FINAL_ROW);
-                            }
+
+                                if (blocks[FINAL_ROW][FINAL_COL].hasMine()) {
+                                    gridButtonClicked(FINAL_COL, FINAL_ROW);
+                                    blocks[FINAL_ROW][FINAL_COL].setMineDiscovered();
+                                    //TODO fix this so it can be clicked twice
+                                    //gridEmptyClicked(FINAL_COL,FINAL_ROW);
+                                }
+                                if (!blocks[FINAL_ROW][FINAL_COL].hasMine()) {
+                                    gridEmptyClicked(FINAL_COL, FINAL_ROW);
+                                }
+                                if(gameWon()){
+                                    FragmentManager manager=getSupportFragmentManager();
+                                    WinMessageFragment dialog=new WinMessageFragment();
+                                    dialog.show(manager,"WinMessage");
+                                    Log.i("TAG","just show the win message");
+                                }
+
                         }
                     });
 
@@ -85,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
 
     private void gridEmptyClicked(int final_col, int final_row) {
             String numOfNearMine=blocks[final_row][final_col].getNumOfMinesRowCol();
@@ -151,9 +167,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    private boolean gameWon(){
+            for (int row=0;row<NUM_ROWS;row++) {
+                for(int col=0;col<NUM_COLS;col++){
+                    if(blocks[row][col].hasMine()&&!blocks[row][col].getMineStatus()){
+                        return false;
+                    }
+                }
+            }
+            return true;
+    }
 
         private void gridButtonClicked ( int col, int row){
-            Toast.makeText(this, "button" + col + "," + row, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "button" + col + "," + row, Toast.LENGTH_SHORT).show();
             Button button = buttons[row][col];
             // lock button sizes;
             lockButtonSizes();
