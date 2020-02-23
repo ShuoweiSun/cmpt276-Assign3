@@ -12,13 +12,13 @@
         <activity android:name=".settings"
             android:screenOrientation="landscape"
             ></activity>
-        <activity android:name=".Welcome_screen"
-            android:screenOrientation="landscape"/>
         <activity android:name=".Main_menu"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".MainActivity"
             android:screenOrientation="landscape"
         />
         <activity
-            android:name=".MainActivity"
+            android:name=".Welcome_screen"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

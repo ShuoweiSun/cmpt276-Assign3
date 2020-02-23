@@ -8,8 +8,20 @@
 
     <RadioGroup
         android:id="@+id/radio_group_mines"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="62dp"
-        tools:layout_editor_absoluteY="82dp" />
+        android:layout_width="300dp"
+        android:layout_height="222dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_field"
+        android:layout_width="300dp"
+        android:layout_height="222dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginLeft="84dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toEndOf="@+id/radio_group_mines"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,15 +42,16 @@ public class MineBlock extends AppCompatActivity {
 
     public boolean hasMine(){return hasMine;}
     public void plantMine(){hasMine=true;}
+    public void setMineDiscovered(){
+        mineDiscovered=true;
+    }
     public String getNumOfMinesRowCol() {
         return numOfMinesRowCol;
     }
     public boolean getMineStatus() {
         return mineDiscovered;
     }
-    public void setMineDiscovered(){
-        mineDiscovered=true;
-    }
+
     public int getNumOfMineRowCol_int(){
         return numOfMineRowCol_int;
     }

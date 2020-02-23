@@ -3,6 +3,8 @@ package com.example.gameboard;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,28 +26,32 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
 
-        private static final int NUM_ROWS = 3;
-        private static final int NUM_COLS = 3;
+        private  int NUM_ROWS = 3;
+        private  int NUM_COLS = 3;
         Button buttons[][] = new Button[NUM_ROWS][NUM_COLS];
         MineBlock blocks[][]=new MineBlock[NUM_ROWS][NUM_COLS];
-        int mines = 4;
+
+        int mines = 0;
         int rowColMineCount;
         int numOfClicks=0;
 
+    public static Intent makeIntent(Context context) {
+        return new Intent(context,MainActivity.class);
+    }
 
-
-        private boolean areMinesSet;
-        // number of mines undiscovered
-        private int minesToFind;
-        boolean hasMine;
-
-        @Override
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+            getUserSetting();
             setupMineField();
             setMines();
             populateButtons();
+        }
+        private void getUserSetting() {
+            mines=settings.getNumPanelsInstalled(this);
+            NUM_COLS=settings.getNumCols(this);
+            NUM_ROWS=settings.getNumRows(this);
         }
 
         private void populateButtons() {
@@ -77,22 +83,27 @@ public class MainActivity extends AppCompatActivity {
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
-                                if (blocks[FINAL_ROW][FINAL_COL].hasMine()&&!blocks[FINAL_ROW][FINAL_COL].getMineStatus()) {
-                                    gridButtonClicked(FINAL_COL, FINAL_ROW);
-
+                                // perform a scan for empty block
+                                if (!blocks[FINAL_ROW][FINAL_COL].hasMine()) {
+                                    calculateMinesRowCol(FINAL_ROW,FINAL_COL);
+                                    gridEmptyClicked(FINAL_COL, FINAL_ROW);
+                                    blocks[FINAL_ROW][FINAL_COL].setBlockClicked();
                                 }
                                 // perform a scan for found mines
                                 if(blocks[FINAL_ROW][FINAL_COL].hasMine()&&blocks[FINAL_ROW][FINAL_COL].getMineStatus()){
                                     gridEmptyClicked(FINAL_COL, FINAL_ROW);
                                 }
-                                blocks[FINAL_ROW][FINAL_COL].setMineDiscovered();
-                                if (!blocks[FINAL_ROW][FINAL_COL].hasMine()) {
-                                    gridEmptyClicked(FINAL_COL, FINAL_ROW);
-                                    blocks[FINAL_ROW][FINAL_COL].setBlockClicked();
+                                // if a mine is found
+                                if (blocks[FINAL_ROW][FINAL_COL].hasMine()&&!blocks[FINAL_ROW][FINAL_COL].getMineStatus()) {
+                                    gridButtonClicked(FINAL_COL, FINAL_ROW);
+                                    blocks[FINAL_ROW][FINAL_COL].setMineDiscovered();
                                 }
-                                numOfClicks++;
+                                // update all the scanned blocks
                                 updateScans();
+
+
+                                numOfClicks++;
+
                                 if(gameWon()){
                                     FragmentManager manager=getSupportFragmentManager();
                                     WinMessageFragment dialog=new WinMessageFragment();
@@ -113,30 +124,29 @@ public class MainActivity extends AppCompatActivity {
         for (int row=0;row<NUM_ROWS;row++) {
             for(int col=0;col<NUM_COLS;col++){
                 if(blocks[row][col].getBlockStatus()){
-                    String numOfNearMine=blocks[row][col].getNumOfMinesRowCol();
-                    Toast.makeText(this,"number of mine: "+numOfNearMine,
-                            Toast.LENGTH_SHORT).show();
-                    Button button=buttons[row][col];
-                    lockButtonSizes();
-                    int count=blocks[row][col].getNumOfMineRowCol_int()-1;
-                    String fileName="num"+count;
-                    int id=getResources().getIdentifier(fileName,"drawable",MainActivity.this.getPackageName());
-                    int newWidth = button.getWidth();
-                    int newHeight = button.getHeight();
-                    Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(),id);
-                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
-                    Resources resource = getResources();
-                    button.setBackground(new BitmapDrawable(resource, scaledBitmap));
+                    rowColMineCount = 0;
+                    for (int thisRow = 0; thisRow < NUM_ROWS; thisRow++) {
+                        if (blocks[thisRow][col].hasMine()&&!blocks[thisRow][col].getMineStatus()) {
+                            rowColMineCount++;
+                        }
+                    }
+                    // check total mine in the same row as the block
+                    for (int thisCol = 0; thisCol < NUM_COLS; thisCol++) {
+                        if (blocks[row][thisCol].hasMine()&&!blocks[row][thisCol].getMineStatus()) {
+                            rowColMineCount++;
+                        }
+
+                    }
+                    blocks[row][col].NumberOfMinesInRowCol(rowColMineCount);
+                    gridEmptyClicked(col,row);
                 }
+
             }
         }
     }
 
 
     private void gridEmptyClicked(int final_col, int final_row) {
-        String numOfNearMine=blocks[final_row][final_col].getNumOfMinesRowCol();
-        Toast.makeText(this,"number of mine: "+numOfNearMine,
-                Toast.LENGTH_SHORT).show();
         Button button=buttons[final_row][final_col];
         lockButtonSizes();
         String fileName="num"+blocks[final_row][final_col].getNumOfMinesRowCol();
@@ -162,6 +172,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        private void calculateMinesRowCol(int row,int col){
+            rowColMineCount = 0;
+            for (int thisRow = 0; thisRow < NUM_ROWS; thisRow++) {
+                if (blocks[thisRow][col].hasMine()&&!blocks[thisRow][col].getMineStatus()) {
+                    rowColMineCount++;
+                }
+            }
+            // check total mine in the same row as the block
+            for (int thisCol = 0; thisCol < NUM_COLS; thisCol++) {
+                if (blocks[row][thisCol].hasMine()&&!blocks[row][thisCol].getMineStatus()) {
+                    rowColMineCount++;
+                }
+            }
+            blocks[row][col].NumberOfMinesInRowCol(rowColMineCount);
+        }
         // setup random mines
         // Function Reference: https://www.codeproject.com/Articles/113892/Minesweeper-Minesweeper-game-for-Android
         private void setMines() {
@@ -176,38 +201,6 @@ public class MainActivity extends AppCompatActivity {
                     row--;
                 }
             blocks[mineRow][mineColumn].plantMine();
-
-
-        }
-
-        // count number of mines in the same row and column of the selected block
-        for (int row = 0; row < NUM_ROWS; row++) {
-            for (int col = 0; col < NUM_COLS; col++) {
-                // for each block find row and col mine count
-                rowColMineCount = 0;
-
-                // check total mine in the same column as the block
-                for (int thisRow = 0; thisRow < NUM_ROWS; thisRow++) {
-                    if (blocks[thisRow][col].hasMine()) {
-                        rowColMineCount++;
-                    }
-                }
-                // check total mine in the same row as the block
-                for (int thisCol = 0; thisCol < NUM_COLS; thisCol++) {
-                    if (blocks[row][thisCol].hasMine()) {
-                        rowColMineCount++;
-                    }
-                }
-
-                //To offset the double-counted mine
-                if(blocks[row][col].hasMine()){
-                    rowColMineCount--;
-                }
-
-                blocks[row][col].NumberOfMinesInRowCol(rowColMineCount);
-
-
-            }
         }
     }
         private boolean gameWon(){
