@@ -13,21 +13,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.Toast;
 
+import com.example.gameboard.UI.settings;
 import com.example.gameboard.gameLogic.MineBlock;
+import com.example.gameboard.gameLogic.UserOptionInput;
 import com.example.gameboard.gameLogic.WinMessageFragment;
 
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
-
-        private  int NUM_ROWS = 3;
-        private  int NUM_COLS = 3;
+        private UserOptionInput userOptionInput;
+        private int NUM_ROWS=5;
+        private  int NUM_COLS =5;
         Button buttons[][] = new Button[NUM_ROWS][NUM_COLS];
         MineBlock blocks[][]=new MineBlock[NUM_ROWS][NUM_COLS];
 
@@ -41,17 +40,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
+            userOptionInput= UserOptionInput.getInstance();
+            setUserSetting();
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-            getUserSetting();
+
             setupMineField();
             setMines();
             populateButtons();
         }
-        private void getUserSetting() {
-            mines=settings.getNumPanelsInstalled(this);
-            NUM_COLS=settings.getNumCols(this);
-            NUM_ROWS=settings.getNumRows(this);
+         private void setUserSetting(){
+            userOptionInput.setMumCols(settings.getNumCols(this));
+            userOptionInput.setMumCols(settings.getNumRows(this));
+            userOptionInput.setNumMines(settings.getNumPanelsInstalled(this));
+            mines=userOptionInput.getNumMines();
         }
 
         private void populateButtons() {

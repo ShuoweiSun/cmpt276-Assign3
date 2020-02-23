@@ -1,12 +1,14 @@
-package com.example.gameboard;
+package com.example.gameboard.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.gameboard.MainActivity;
+import com.example.gameboard.R;
 
 public class Main_menu extends AppCompatActivity {
 
@@ -16,9 +18,19 @@ public class Main_menu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         setupSettingButton();
         setupPlayButton();
+        setupHelpButton();
     }
 
-
+    private void setupHelpButton() {
+        Button btn=(Button)findViewById(R.id.help_btn);
+        btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent= helpPage.makeIntent(Main_menu.this);
+                startActivity(intent);
+            }
+        });
+    }
 
 
     private void setupSettingButton() {
@@ -26,7 +38,7 @@ public class Main_menu extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent=settings.makeIntent(Main_menu.this);
+                Intent intent= settings.makeIntent(Main_menu.this);
                 startActivity(intent);
             }
         });
@@ -36,7 +48,7 @@ public class Main_menu extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent=MainActivity.makeIntent(Main_menu.this);
+                Intent intent= MainActivity.makeIntent(Main_menu.this);
                 startActivity(intent);
             }
         });

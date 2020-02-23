@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settings">
+    android:background="@drawable/beach"
+    tools:context=".UI.settings">
 
     <RadioGroup
         android:id="@+id/radio_group_mines"
@@ -22,6 +23,18 @@
         android:layout_marginLeft="84dp"
         android:layout_marginTop="28dp"
         app:layout_constraintStart_toEndOf="@+id/radio_group_mines"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="312dp"
+        android:layout_marginLeft="312dp"
+        android:layout_marginTop="8dp"
+        android:text="Settings"
+        app:autoSizeTextType="none"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

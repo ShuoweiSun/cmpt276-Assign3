@@ -1,4 +1,4 @@
-package com.example.gameboard;
+package com.example.gameboard.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,12 +11,18 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.gameboard.R;
+import com.example.gameboard.gameLogic.UserOptionInput;
+
 public class settings extends AppCompatActivity {
+    private UserOptionInput userOptionInput;
     public static Intent makeIntent(Context context){
         return new Intent(context,settings.class);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        userOptionInput= UserOptionInput.getInstance();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         createRadioButtons();
@@ -27,6 +33,7 @@ public class settings extends AppCompatActivity {
         int savedBoardSize=getNumRows(this);
         Toast.makeText(this,"saved row "+ savedBoardSize,Toast.LENGTH_SHORT)
                 .show();
+
     }
     private void createMineField(){
         RadioGroup group=(RadioGroup)findViewById(R.id.radio_group_field);
@@ -99,6 +106,7 @@ public class settings extends AppCompatActivity {
         SharedPreferences.Editor editor=prefs.edit();
         editor.putInt("number of rows",row);
         editor.apply();
+
     }
     static public int getNumRows(Context context){
         SharedPreferences prefs=context.getSharedPreferences("RowPrefs",MODE_PRIVATE);
@@ -116,4 +124,5 @@ public class settings extends AppCompatActivity {
         SharedPreferences prefs=context.getSharedPreferences("ColPrefs",MODE_PRIVATE);
         return prefs.getInt("number of cols",0);
     }
+
 }
